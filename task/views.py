@@ -17,52 +17,6 @@ class ExcelPageView(TemplateView):
         return self.render_to_response(context)
 
 
-# def ExportExcelfile(request):
-#     workbook = Workbook()
-#     worksheet = workbook.active
-#     worksheet.title = "Database data"
-
-#     row_num = 1
-
-#     columns = ['id', 'Job', 'Job Category', 'Applicant', 'Document', 'file']
-
-#     # starting time
-#     start = time.time()
-
-#     app_data = Applicants.objects.values(
-#         'id', 'job__title', 'job__category__title', 'user__username', 'documents__category', 'documents__file__type')
-
-#     # print(app_data)
-#     for col_num, column_title in enumerate(columns, 1):
-#         cell = worksheet.cell(row=row_num, column=col_num)
-#         cell.value = column_title
-#         # for cell in each rows
-
-#     for app in app_data:
-#         row_num += 1
-#         row = [
-#             app['id'],
-#             app['job__title'],
-#             app['job__category__title'],
-#             app['user__username'],
-#             app['documents__category'],
-#             app['documents__file__type']
-#         ]
-
-#         for col_num, cell_value in enumerate(row, 1):
-#             cell = worksheet.cell(row=row_num, column=col_num)
-#             cell.value = str(cell_value)
-
-#     # endtime
-#     end = time.time()
-#     # totaltime
-#     print(f'Total time to run: {end - start:2f}s')
-#     response = HttpResponse(content=save_virtual_workbook(
-#         workbook), content_type='application/ms-excel')
-#     response['Content-Disposition'] = 'attachment; filename=exportedfile.xlsx'
-#     workbook.save(response)
-#     return response
-
 def ExportThread(app_data, columns, sheet, row_num):
     for app in app_data:
         row_num += 1
