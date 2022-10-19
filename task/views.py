@@ -12,7 +12,7 @@ class ExcelPageView(TemplateView):
     template_name = "excel_page.html"
 
 
-def ExportThread(app_data, columns, sheet, row_num):
+def ExportThread(app_data,  sheet, row_num):
     for app in app_data:
         row_num += 1
         row = [
@@ -60,7 +60,7 @@ def ExportExcelfile(request):
             app_data = queryset[i:(i + chunksize)]
             # submit the batch
             k = executor.map(
-                ExportThread(app_data, columns, sheet, row_num))
+                ExportThread(app_data, sheet, row_num))
 
     # endtime
     end = time.time()
