@@ -1,6 +1,5 @@
 import time
 from openpyxl import Workbook
-from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 from django.http import HttpResponse
 # Create your views here.
@@ -11,10 +10,6 @@ from task.models import Applicants
 
 class ExcelPageView(TemplateView):
     template_name = "excel_page.html"
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
 
 
 def ExportThread(app_data, columns, sheet, row_num):
@@ -46,24 +41,25 @@ def ExportExcelfile(request):
     columns = ['id', 'Job', 'Job Category',
                'Applicant', 'Document', 'file']
 
-    row_num = 1
     for col_num, column_title in enumerate(columns, 1):
-        cell = sheet.cell(row=row_num, column=col_num)
+        cell = sheet.cell(row=1, column=col_num)
         cell.value = column_title
 
-    n_workers = 15
+    # no of threads
+    n_workers = 2
 
     chunksize = int((len(queryset) / n_workers))
 
     # starttime
     start = time.time()
     with concurrent.futures.ThreadPoolExecutor(n_workers) as executor:
-        # split the move operations into chunks
+        # split operations into chunks
         for i in range(1, len(queryset), chunksize):
-            # select a chunk of filenames
+            row_num = i
+            # select a chunk
             app_data = queryset[i:(i + chunksize)]
-            # submit the batch move task
-            _ = executor.map(
+            # submit the batch
+            k = executor.map(
                 ExportThread(app_data, columns, sheet, row_num))
 
     # endtime
